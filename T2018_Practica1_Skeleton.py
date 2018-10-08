@@ -105,6 +105,42 @@ def uoc_railfence_decrypt(ciphertext, key):
     plaintext = ''
 
     # --- IMPLEMENTATION GOES HERE ---
+    num_rails = key[0]
+    holes = key[1]
+
+    info = [0, 0, True]
+
+    table = [[None for x in range(len(ciphertext) + len(holes))] for y in range(num_rails)]
+
+    # Fill the holes in the table
+    for hole in holes:
+        table[hole[0]][hole[1]] = '*'
+
+    for i in range(len(ciphertext)):
+        while (table[info[0]][info[1]] == '*'):
+            info = move_on(info, num_rails)
+
+        table[info[0]][info[1]] = '-'
+        info = move_on(info, num_rails)
+
+    c = 0
+    for i in range(num_rails):
+        for j in range(len(ciphertext) + len(holes)):
+            if(table[i][j] == '-'):
+                table[i][j] = ciphertext[c]
+                c += 1;
+
+    info = [0, 0, True]
+    for i in range(len(ciphertext)):
+        while (table[info[0]][info[1]] == '*'):
+            info = move_on(info, num_rails)
+
+        plaintext += table[info[0]][info[1]]
+        info = move_on(info, num_rails)
+
+    # print(table[0])
+    # print(table[1])
+    # print(table[2])
 
 
     # --------------------------------
